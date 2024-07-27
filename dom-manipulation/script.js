@@ -69,13 +69,15 @@ function createAddQuoteForm() {
 }
 
 // Function to add a new quote
-function addQuote() {
+async function addQuote() {
     const newQuoteText = document.getElementById('newQuoteText').value;
     const newQuoteCategory = document.getElementById('newQuoteCategory').value;
 
     if (newQuoteText && newQuoteCategory) {
-        quotes.push({ text: newQuoteText, category: newQuoteCategory });
+        const newQuote = { text: newQuoteText, category: newQuoteCategory };
+        quotes.push(newQuote);
         saveQuotes();
+        await postQuoteToServer(newQuote); // POST new quote to server
         updateCategoryFilterOptions();
         document.getElementById('newQuoteText').value = '';
         document.getElementById('newQuoteCategory').value = '';
@@ -105,11 +107,11 @@ function exportToJsonFile() {
 function importFromJsonFile(event) {
     const fileReader = new FileReader();
     fileReader.onload = function(event) {
-      const importedQuotes = JSON.parse(event.target.result);
-      quotes.push(...importedQuotes);
-      saveQuotes();
-      updateCategoryFilterOptions();
-      alert('Quotes imported successfully!');
+        const importedQuotes = JSON.parse(event.target.result);
+        quotes.push(...importedQuotes);
+        saveQuotes();
+        updateCategoryFilterOptions();
+        alert('Quotes imported successfully!');
     };
     fileReader.readAsText(event.target.files[0]);
 }
@@ -175,24 +177,24 @@ async function fetchQuotesFromServer() {
     }
 }
 
-// Function to post updated quotes to the server
-async function postQuotesToServer(quotes) {
+// Function to post a new quote to the server
+async function postQuoteToServer(quote) {
     try {
         const response = await fetch(API_URL, {
-            method: 'PUT',
+            method: 'POST', // Changed to POST
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(quotes)
+            body: JSON.stringify(quote)
         });
 
         if (response.ok) {
-            console.log('Quotes successfully updated on the server.');
+            console.log('Quote successfully added to the server.');
         } else {
-            console.error('Failed to update quotes on the server.');
+            console.error('Failed to add quote to the server.');
         }
     } catch (error) {
-        console.error('Error updating quotes on the server:', error);
+        console.error('Error adding quote to the server:', error);
     }
 }
 
