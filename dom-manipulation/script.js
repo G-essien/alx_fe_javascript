@@ -111,13 +111,11 @@ function importFromJsonFile(event) {
     fileReader.readAsText(event.target.files[0]);
 }
 
-// Function to get unique categories from quotes
+// Function to get unique categories from quotes using map()
 function getUniqueCategories() {
-    const categories = new Set();
-    quotes.forEach(quote => {
-        categories.add(quote.category);
-    });
-    return Array.from(categories);
+    const categories = quotes.map(quote => quote.category);
+    const uniqueCategories = Array.from(new Set(categories));
+    return uniqueCategories;
 }
 
 // Function to update category filter options
