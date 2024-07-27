@@ -220,6 +220,26 @@ function notifyConflict() {
     alert('Data conflict detected. Server data has been prioritized.');
 }
 
+// Function to sync quotes from server and local storage
+async function syncQuotes() {
+    // Fetch server quotes
+    const serverQuotes = await fetchQuotesFromServer();
+    if (serverQuotes.length > 0) {
+        // Check for differences
+        const localQuotes = loadQuotes();
+        if (JSON.stringify(serverQuotes) !== JSON.stringify(localQuotes)) {
+            // Notify conflict and use server data
+            notifyConflict();
+            quotes = serverQuotes;
+            saveQuotes();
+            updateCategoryFilterOptions();
+            showRandomQuote();
+        }
+    } else {
+        alert('No new data from the server.');
+    }
+}
+
 // Initial quotes array
 let quotes = loadQuotes();
 
