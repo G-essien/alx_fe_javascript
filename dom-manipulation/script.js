@@ -210,6 +210,7 @@ async function syncWithServer() {
         saveQuotes();
         updateCategoryFilterOptions();
         showRandomQuote();
+        alert('Quotes synced with server!'); // Added notification for successful sync
     } else {
         alert('No new data from the server.');
     }
@@ -234,6 +235,7 @@ async function syncQuotes() {
             saveQuotes();
             updateCategoryFilterOptions();
             showRandomQuote();
+            alert('Quotes synced with server!'); // Added notification for successful sync
         }
     } else {
         alert('No new data from the server.');
