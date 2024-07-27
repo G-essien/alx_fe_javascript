@@ -124,15 +124,21 @@ function updateCategoryFilterOptions() {
     const selectedCategory = categoryFilter.value;
     categoryFilter.innerHTML = '<option value="all">All Categories</option>';
 
+    populateCategories();
+    categoryFilter.value = selectedCategory;
+}
+
+// Function to populate category options in the dropdown
+function populateCategories() {
+    const categoryFilter = document.getElementById('categoryFilter');
     const categories = getUniqueCategories();
+    
     categories.forEach(category => {
         const option = document.createElement('option');
         option.value = category;
         option.textContent = category;
         categoryFilter.appendChild(option);
     });
-
-    categoryFilter.value = selectedCategory;
 }
 
 // Function to filter quotes array based on selected category
@@ -160,7 +166,7 @@ document.getElementById('newQuote').addEventListener('click', showRandomQuote);
 createAddQuoteForm();
 
 // Populate category filter options
-updateCategoryFilterOptions();
+populateCategories();
 
 // Set last selected category
 document.getElementById('categoryFilter').value = loadLastSelectedCategory();
