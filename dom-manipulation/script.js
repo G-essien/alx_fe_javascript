@@ -24,7 +24,7 @@ function showRandomQuote() {
     const quoteDisplay = document.getElementById('quoteDisplay');
     const randomIndex = Math.floor(Math.random() * quotes.length);
     const quote = quotes[randomIndex];
-    quoteDisplay.innerText = `"${quote.text}" - ${quote.category}`;
+    quoteDisplay.innerHTML = `"${quote.text}" - ${quote.category}`;
 }
 
 // Function to add a new quote
