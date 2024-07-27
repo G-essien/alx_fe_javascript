@@ -1,3 +1,6 @@
+// Base URL for the mock API
+const API_URL = 'https://jsonplaceholder.typicode.com/posts'; // Replace with your mock API endpoint
+
 // Function to load quotes from localStorage
 function loadQuotes() {
     const storedQuotes = localStorage.getItem('quotes');
@@ -156,6 +159,65 @@ function filterQuotes() {
     showRandomQuote();
 }
 
+// Function to fetch quotes from the server
+async function fetchQuotesFromServer() {
+    try {
+        const response = await fetch(API_URL);
+        if (response.ok) {
+            return await response.json();
+        } else {
+            console.error('Failed to fetch quotes from the server.');
+            return [];
+        }
+    } catch (error) {
+        console.error('Error fetching quotes from the server:', error);
+        return [];
+    }
+}
+
+// Function to post updated quotes to the server
+async function postQuotesToServer(quotes) {
+    try {
+        const response = await fetch(API_URL, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(quotes)
+        });
+
+        if (response.ok) {
+            console.log('Quotes successfully updated on the server.');
+        } else {
+            console.error('Failed to update quotes on the server.');
+        }
+    } catch (error) {
+        console.error('Error updating quotes on the server:', error);
+    }
+}
+
+// Function to synchronize local quotes with the server
+async function syncWithServer() {
+    const serverQuotes = await fetchQuotesFromServer();
+    if (serverQuotes.length > 0) {
+        if (JSON.stringify(serverQuotes) !== JSON.stringify(quotes)) {
+            notifyConflict();
+        }
+        // Simple conflict resolution: server data takes precedence
+        quotes = serverQuotes;
+        saveQuotes();
+        updateCategoryFilterOptions();
+        showRandomQuote();
+    } else {
+        alert('No new data from the server.');
+    }
+}
+
+// Function to notify users of conflicts
+function notifyConflict() {
+    alert('Data conflict detected. Server data has been prioritized.');
+}
+
 // Initial quotes array
 let quotes = loadQuotes();
 
@@ -173,3 +235,11 @@ document.getElementById('categoryFilter').value = loadLastSelectedCategory();
 
 // Load initial random quote on page load
 showRandomQuote();
+
+// Set up periodic syncing with the server every 5 minutes
+setInterval(syncWithServer, 5 * 60 * 1000);
+
+// Sync with the server on page load
+window.addEventListener('load', async () => {
+    await syncWithServer();
+});
