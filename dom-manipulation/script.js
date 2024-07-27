@@ -72,14 +72,17 @@ function addQuote() {
 // Function to export quotes to JSON
 function exportToJsonFile() {
     const dataStr = JSON.stringify(quotes);
-    const dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(dataStr);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
 
     const exportFileDefaultName = 'quotes.json';
 
     const linkElement = document.createElement('a');
-    linkElement.setAttribute('href', dataUri);
+    linkElement.setAttribute('href', url);
     linkElement.setAttribute('download', exportFileDefaultName);
+    document.body.appendChild(linkElement); // Required for FF
     linkElement.click();
+    linkElement.remove();
 }
 
 // Function to import quotes from JSON file
