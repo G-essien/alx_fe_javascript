@@ -1,9 +1,23 @@
+// Function to load quotes from localStorage
+function loadQuotes() {
+    const storedQuotes = localStorage.getItem('quotes');
+    if (storedQuotes) {
+        return JSON.parse(storedQuotes);
+    }
+    return [
+        { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
+        { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
+        { text: "Good things come to those who wait, but better things come to those who go out and get them.", category: "Success" }
+    ];
+}
+
 // Initial quotes array
-let quotes = [
-    { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
-    { text: "Life is 10% what happens to us and 90% how we react to it.", category: "Life" },
-    { text: "Good things come to those who wait, but better things come to those who go out and get them.", category: "Success" }
-];
+let quotes = loadQuotes();
+
+// Function to save quotes to localStorage
+function saveQuotes() {
+    localStorage.setItem('quotes', JSON.stringify(quotes));
+}
 
 // Function to show a random quote
 function showRandomQuote() {
@@ -20,6 +34,7 @@ function addQuote() {
 
     if (newQuoteText && newQuoteCategory) {
         quotes.push({ text: newQuoteText, category: newQuoteCategory });
+        saveQuotes();
         document.getElementById('newQuoteText').value = '';
         document.getElementById('newQuoteCategory').value = '';
         alert('New quote added successfully!');
@@ -30,3 +45,6 @@ function addQuote() {
 
 // Event listener for the "Show New Quote" button
 document.getElementById('newQuote').addEventListener('click', showRandomQuote);
+
+// Load initial random quote on page load
+showRandomQuote();
